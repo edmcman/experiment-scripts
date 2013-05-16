@@ -3,6 +3,7 @@
 import csv
 import gdata.spreadsheet.text_db
 import os
+import string
 import subprocess
 import sys
 import time
@@ -13,7 +14,12 @@ from subprocess import Popen, PIPE
 # Redo entries already in sheet?
 redo = False
 
-problems = [1, 2, 3, 4, 5]
+names = ["ed", "thanassis"]
+inputs = reduce(list.__add__, map(lambda n: map(lambda num: {"name": n, "num": num}, xrange(5)), names))
+print inputs
+
+ids = ["name", "num"]
+measured = ["time"]
 
 key="0Au4zXzOoce8JdGFjZ0JBVTIxRmgzeEpZN0VFRVktb0E"
 
@@ -28,7 +34,8 @@ tables = db.GetTables(name=dbname)
 if len(tables) == 1:
     table = tables[0]
 else:
-    table = db.CreateTable(dbname, ['x', 'time'])
+    print "creating"
+    table = db.CreateTable(dbname, ids + measured)
 
 def timeit(cmd):
     stime = time.time()
@@ -42,13 +49,14 @@ def timeit(cmd):
 
     return duration, stderr
 
-def run_method(x):
-
-    print x
+def run_method(inputs):
 
     # Delete any existing row
-    qstr = "x==" + str(x)
-    records = table.FindRecords(qstr)
+    query_strs = map(lambda column: column + " == \"" + str(inputs[column]) + "\"", ids)
+    query_str = string.join(query_strs, " and ")
+    print query_str
+
+    records = table.FindRecords(query_str)
 
     if redo:
         for row in records:
@@ -59,10 +67,16 @@ def run_method(x):
 
     if go:
         print "going"
-        runtime, out = timeit("sleep " + str(x))
+        runtime, out = timeit("sleep " + str(len(inputs["name"])))
         print "aight"
 
-        d = {'x': str(x), 'time': str(runtime)}
+        measurements = {"time": runtime}
+
+        m = map(lambda column: (column, str(inputs[column])), ids)
+        m = m + map(lambda column: (column, str(measurements[column])), measured)
+        d = dict(m)
+        print d
+
         ## Try a couple times to add the data
         for i in xrange(10):
              try:
@@ -75,12 +89,12 @@ def run_method(x):
 
     else:
          # Don't make Google too mad.
-         print "Skipping", x
+         print "Skipping", inputs
          sys.stdout.flush()
          time.sleep(1)
 
 pool = Pool()
 
-pool.map(run_method, problems)
+pool.map(run_method, inputs)
 
 
