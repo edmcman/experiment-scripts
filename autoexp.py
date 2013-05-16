@@ -39,7 +39,6 @@ tables = db.GetTables(name=dbname)
 if len(tables) == 1:
     table = tables[0]
 else:
-    print "creating"
     table = db.CreateTable(dbname, ids + measured)
 
 def timeit(cmd):
@@ -56,10 +55,10 @@ def timeit(cmd):
 
 def run_method(inputs):
 
-    # Delete any existing row
+    # Check for existing rows
     query_strs = map(lambda column: column + " == \"" + str(inputs[column]) + "\"", ids)
     query_str = string.join(query_strs, " and ")
-    print query_str
+    #print query_str
 
     records = table.FindRecords(query_str)
 
@@ -71,16 +70,14 @@ def run_method(inputs):
         go = len(records) == 0
 
     if go:
-        print "going"
         runtime, out = timeit("sleep " + str(random.normalvariate(len(inputs["name"]), 1.0)))
-        print "aight"
 
         measurements = {"time": runtime}
 
         m = map(lambda column: (column, str(inputs[column])), ids)
         m = m + map(lambda column: (column, str(measurements[column])), measured)
         d = dict(m)
-        print d
+        #print d
 
         ## Try a couple times to add the data
         for i in xrange(10):
