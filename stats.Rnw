@@ -1,0 +1,17 @@
+% Example sweave file
+
+<<echo=FALSE, results=hide>>=
+source("analyze.R")
+@
+
+\newcommand{\numsamples}{%
+  \Sexpr{numsamples}\xspace%
+}
+
+\newcommand{\edmean}{%
+  \Sexpr{edmean}\xspace%
+}
+
+\newcommand{\thanassismean}{%
+  \Sexpr{thanassismean}\xspace%
+}

@@ -1,8 +1,11 @@
 #!/usr/bin/python
+# Example experiment script
+# Authors: Ed Schwartz and Thanassis Avgerinos
 
 import csv
 import gdata.spreadsheet.text_db
 import os
+import random
 import string
 import subprocess
 import sys
@@ -14,8 +17,10 @@ from subprocess import Popen, PIPE
 # Redo entries already in sheet?
 redo = False
 
+trials = 20
+
 names = ["ed", "thanassis"]
-inputs = reduce(list.__add__, map(lambda n: map(lambda num: {"name": n, "num": num}, xrange(5)), names))
+inputs = reduce(list.__add__, map(lambda n: map(lambda num: {"name": n, "num": num}, xrange(trials)), names))
 print inputs
 
 ids = ["name", "num"]
@@ -67,7 +72,7 @@ def run_method(inputs):
 
     if go:
         print "going"
-        runtime, out = timeit("sleep " + str(len(inputs["name"])))
+        runtime, out = timeit("sleep " + str(random.normalvariate(len(inputs["name"]), 1.0)))
         print "aight"
 
         measurements = {"time": runtime}
