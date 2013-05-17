@@ -31,10 +31,7 @@ ids = ["name", "num"]
 # Measurement (output) columns
 measured = ["time"]
 
-# Change this to the key of your google docs spreadsheet
-key="0Au4zXzOoce8JdGFjZ0JBVTIxRmgzeEpZN0VFRVktb0E"
-
-from password import user, password
+from password import key, user, password
 
 # Change this to the name of the worksheet you want to use
 dbname="paper"

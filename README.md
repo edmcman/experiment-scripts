@@ -36,16 +36,14 @@ The main experiment script is `autoexp.py`.  It is written in python,
 and is primarily set up to time external commands.  The current
 version "measures" the time it takes to type a name by generating a
 random number.  However, it should be easily adapted to real
-experiments.  Before it can be used, the script must be configured
-with a google docs spreadsheet key that your google account has write
-access to.  You can find a spreadsheet's key by looking at its
-url. You will also need to put your google account information in the
-`password.py` file. Running `autoexp.py` should add a new table called
-`paper` to the google docs spreadsheet. It should look like
-[this][example-spreadsheet].  If you look at the spreadsheet while the
-script is running, you should be able to see each row being added to
-the spreadsheet.  This is more useful for experiments that take hours
-or days to run.
+experiments.  Before it can be used, you must put your google account
+information and the google docs spreadsheet key in the `password.py`
+file.  You can find a spreadsheet's key by looking at its url.Running
+`autoexp.py` should add a new table called `paper` to the google docs
+spreadsheet. It should look like [this][example-spreadsheet].  If you
+look at the spreadsheet while the script is running, you should be
+able to see each row being added to the spreadsheet.  This is more
+useful for experiments that take hours or days to run.
 
 `analyze.R` is an R script that analyzes the uploaded data.  It reads
 the experiment data directly from google docs, counts the number of
@@ -69,3 +67,8 @@ file similar to `paper.pdf`.
 [LaTeX]: http://www.latex-project.org/
 [R]: http://www.r-project.org
 [Sweave]: http://www.stat.uni-muenchen.de/~leisch/Sweave/
+
+Quick Start
+===========
+
+Change
