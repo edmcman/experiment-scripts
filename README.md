@@ -48,11 +48,12 @@ useful for experiments that take hours or days to run.
 `analyze.R` is an R script that analyzes the uploaded data.  It reads
 the experiment data directly from google docs, counts the number of
 samples, computes the mean time to "type" both Ed and Thanassis, and
-then produces two figures.  I often start analyzing experimental data
-by opening R and running `source("analyze.R")` to download the
-experimental data.  There are many tools inside of R for exploratory
-data analysis, but I personally prefer visualization using the [ggplot2][ggplot2]
-package.
+then produces two figures.  You will probably want to edit this script
+so that it uses your own google docs csv file instead of mine.  I
+often start analyzing experimental data by opening R and running
+`source("analyze.R")` to download the experimental data.  There are
+many tools inside of R for exploratory data analysis, but I personally
+prefer visualization using the [ggplot2][ggplot2] package.
 
 Finally, the results from `analyze.R` can also be incorporated into a
 LaTeX paper.  This is done using the [Sweave][Sweave] file
@@ -71,4 +72,12 @@ file similar to `paper.pdf`.
 Quick Start
 ===========
 
-Change
+* Add google docs spreadsheet key and login information to
+  `password.py`.
+
+* Run `python autoexp.py`
+
+* Edit `analyze.R` to use your own google docs spreadsheet (you can
+  get this url from `File` -> `Publish to the web`).
+
+* Run `make`
