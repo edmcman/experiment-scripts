@@ -1,3 +1,6 @@
+Overview
+========
+
 This project is a set of skeleton scripts for running experiments,
 analyzing them, and reporting the results in an academic paper.
 Specifically, the scripts:
@@ -27,6 +30,22 @@ This process has a number of benefits for academic paper writing:
   Need to make a new figure?  No problem.  Need to share your data?
   Just share the google doc, and optionally share your R script for
   analyzing it.
+
+Quick Start
+===========
+
+* Add google docs spreadsheet key and login information to
+  `password.py`.
+
+* Run `python autoexp.py`
+
+* Edit `analyze.R` to use your own google docs spreadsheet (you can
+  get this url from `File` -> `Publish to the web`).
+
+* Run `make`
+
+Details
+=======
 
 The scripts in this project run a fictitious experiment that measures
 how long it takes to type my name (Ed) and the name of my co-author
@@ -69,15 +88,3 @@ file similar to `paper.pdf`.
 [R]: http://www.r-project.org
 [Sweave]: http://www.stat.uni-muenchen.de/~leisch/Sweave/
 
-Quick Start
-===========
-
-* Add google docs spreadsheet key and login information to
-  `password.py`.
-
-* Run `python autoexp.py`
-
-* Edit `analyze.R` to use your own google docs spreadsheet (you can
-  get this url from `File` -> `Publish to the web`).
-
-* Run `make`
