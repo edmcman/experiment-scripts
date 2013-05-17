@@ -1,5 +1,8 @@
 #!/usr/bin/python
-# Example experiment script
+# Example experiment script that generates random data representing
+# the time it takes to type a particular word.  The results are
+# uploaded to a google docs spreadsheet.
+
 # Authors: Ed Schwartz and Thanassis Avgerinos
 
 import csv

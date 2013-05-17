@@ -1,4 +1,4 @@
-% Example sweave file
+% Example sweave file that gathers statistics from analyze.R
 
 <<echo=FALSE, results=hide>>=
 source("analyze.R")

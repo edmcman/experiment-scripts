@@ -1,5 +1,6 @@
 #!/usr/bin/Rscript
-# Example R script
+# Example R script to analyze fake typing time data.  The mean times
+# for both words are computed.  Two figures are also produced.
 
 library(ggplot2)
 library(reshape)
