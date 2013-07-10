@@ -57,7 +57,7 @@ version "measures" the time it takes to type a name by generating a
 random number.  However, it should be easily adapted to real
 experiments.  Before it can be used, you must put your google account
 information and the google docs spreadsheet key in the `password.py`
-file.  You can find a spreadsheet's key by looking at its url.Running
+file.  You can find a spreadsheet's key by looking at its url. Running
 `autoexp.py` should add a new table called `paper` to the google docs
 spreadsheet. It should look like [this][example-spreadsheet].  If you
 look at the spreadsheet while the script is running, you should be
