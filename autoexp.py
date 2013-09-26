@@ -101,6 +101,8 @@ def run_method(inputs):
 
 pool = Pool()
 
-pool.map(run_method, inputs)
+# By specifying a timeout, keyboard interrupts are processed.
+# See http://stackoverflow.com/a/1408476/670527
+pool.map_async(run_method, inputs).get(sys.maxint)
 
 
