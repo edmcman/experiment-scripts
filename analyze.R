@@ -82,7 +82,7 @@ g = qplot(time, data=d, fill = name)
 ggsave(file = "hist.pdf", width=6.6, height=2.2, scale=1.5)
 
 g = qplot(name, time, geom=c("bar"), fill=name, data=dsummary) + geom_errorbar(aes(ymin=time-ci, ymax=time+ci))
-ggsave(file = "histsummary.pdf", width=6.6, height=2.2, scale=1.5)
+ggsave(file = "histsummary.pdf", width=3.16, height=1.75, scale=1.5)
 
 # Stats
 numsamples = nrow(d)
