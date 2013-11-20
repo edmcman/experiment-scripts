@@ -9,7 +9,11 @@ library(grid)
 require(RCurl)
 
 theme_set(theme_bw())
-pointsize=2
+theme_slides <- theme_bw(base_size = 28) +
+                theme(axis.title.x = element_text(vjust = -1),
+                      axis.title.y = element_text(vjust = 0.35),
+                      plot.margin = unit(c(.5, .5, 1, .5), "cm"),
+                      legend.text = element_text(size = 18))
 
 ## From http://www.cookbook-r.com/Manipulating_data/Summarizing_data/#using-summaryby
 ## Summarizes data.
@@ -83,6 +87,10 @@ ggsave(file = "hist.pdf", width=6.6, height=2.2, scale=1.5)
 
 g = qplot(name, time, geom=c("bar"), fill=name, data=dsummary) + geom_errorbar(aes(ymin=time-ci, ymax=time+ci))
 ggsave(file = "histsummary.pdf", width=3.16, height=1.75, scale=1.5)
+
+g + theme_slides
+ggsave(file = "histsummary-slides.pdf", width=11.5, height=7.5, scale=0.9)
+ggsave(file = "histsummary-slides.svg", width=11.5, height=7.5, scale=0.9)
 
 # Stats
 numsamples = nrow(d)
