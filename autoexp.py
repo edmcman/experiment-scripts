@@ -13,7 +13,6 @@ import string
 import subprocess
 import sys
 import time
-from multiprocessing import Pool
 
 from subprocess import Popen, PIPE
 
@@ -110,12 +109,3 @@ def process_results(d):
         except:
             print "Unexpected error:", sys.exc_info()[0]
             time.sleep(i*10)
-
-
-pool = Pool()
-
-# By specifying a timeout, keyboard interrupts are processed.
-# See http://stackoverflow.com/a/1408476/670527
-pool.map_async(run_experiment, inputs).get(sys.maxint)
-
-
