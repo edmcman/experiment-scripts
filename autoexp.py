@@ -57,14 +57,22 @@ def timeit(cmd):
 
     return duration, stderr
 
+def quote_if_needed(x):
+    x = str(x)
+    if x.isdigit():
+        return x
+    else:
+        return "\"" + x + "\""
+
 def run_experiment(inputs):
 
     # Check for existing rows
-    query_strs = map(lambda column: column + " == \"" + str(inputs[column]) + "\"", ids)
+    query_strs = map(lambda column: column + " == " + quote_if_needed(inputs[column]), ids)
     query_str = string.join(query_strs, " and ")
     #print query_str
 
     records = table.FindRecords(query_str)
+    #print records
 
     if redo:
         for row in records:
