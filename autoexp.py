@@ -57,7 +57,7 @@ def timeit(cmd):
 
     return duration, stderr
 
-def run_method(inputs):
+def run_experiment(inputs):
 
     # Check for existing rows
     query_strs = map(lambda column: column + " == \"" + str(inputs[column]) + "\"", ids)
@@ -78,20 +78,13 @@ def run_method(inputs):
 
         measurements = {"time": runtime}
 
+        # Add input columns
         m = map(lambda column: (column, str(inputs[column])), ids)
+        # Add measurement columns
         m = m + map(lambda column: (column, str(measurements[column])), measured)
         d = dict(m)
-        #print d
 
-        ## Try a couple times to add the data
-        for i in xrange(10):
-             try:
-                 print "adding", d
-                 table.AddRecord(d)
-                 break
-             except:
-                 print "Unexpected error:", sys.exc_info()[0]
-                 time.sleep(i*10)
+        process_results(d)
 
     else:
          # Don't make Google too mad.
@@ -99,10 +92,22 @@ def run_method(inputs):
          sys.stdout.flush()
          time.sleep(1)
 
+def process_results(d):
+    ## Try a couple times to add the data
+    for i in xrange(10):
+        try:
+            print "adding", d
+            table.AddRecord(d)
+            break
+        except:
+            print "Unexpected error:", sys.exc_info()[0]
+            time.sleep(i*10)
+
+
 pool = Pool()
 
 # By specifying a timeout, keyboard interrupts are processed.
 # See http://stackoverflow.com/a/1408476/670527
-pool.map_async(run_method, inputs).get(sys.maxint)
+pool.map_async(run_experiment, inputs).get(sys.maxint)
 
 
