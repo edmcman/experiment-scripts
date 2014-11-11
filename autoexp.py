@@ -13,7 +13,6 @@ import string
 import subprocess
 import sys
 import time
-from multiprocessing import Pool
 
 from subprocess import Popen, PIPE
 
@@ -92,13 +91,14 @@ def run_experiment(inputs):
         m = m + map(lambda column: (column, str(measurements[column])), measured)
         d = dict(m)
 
-        process_results(d)
+        return d
 
     else:
          # Don't make Google too mad.
          print "Skipping", inputs
          sys.stdout.flush()
          time.sleep(1)
+         return None
 
 def process_results(d):
     ## Try a couple times to add the data
@@ -111,11 +111,7 @@ def process_results(d):
             print "Unexpected error:", sys.exc_info()[0]
             time.sleep(i*10)
 
-
-pool = Pool()
-
-# By specifying a timeout, keyboard interrupts are processed.
-# See http://stackoverflow.com/a/1408476/670527
-pool.map_async(run_experiment, inputs).get(sys.maxint)
-
-
+def run_and_process(i):
+    x = run_experiment(i)
+    if not x is None:
+        process_results(x)
