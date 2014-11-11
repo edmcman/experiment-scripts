@@ -37,7 +37,7 @@ Quick Start
 * Add google docs spreadsheet key and login information to
   `password.py`.
 
-* Run `python autoexp.py`
+* Run `python autoexp_pool.py`
 
 * Edit `analyze.R` to use your own google docs spreadsheet (you can
   get this url from `File` -> `Publish to the web`).
@@ -51,18 +51,19 @@ The scripts in this project run a fictitious experiment that measures
 how long it takes to type my name (Ed) and the name of my co-author
 (Thanassis).  Thanassis helped me write some of these scripts.
 
-The main experiment script is `autoexp.py`.  It is written in python,
-and is primarily set up to time external commands.  The current
-version "measures" the time it takes to type a name by generating a
-random number.  However, it should be easily adapted to real
-experiments.  Before it can be used, you must put your google account
-information and the google docs spreadsheet key in the `password.py`
-file.  You can find a spreadsheet's key by looking at its url. Running
-`autoexp.py` should add a new table called `paper` to the google docs
-spreadsheet. It should look like [this][example-spreadsheet].  If you
-look at the spreadsheet while the script is running, you should be
-able to see each row being added to the spreadsheet.  This is more
-useful for experiments that take hours or days to run.
+The main experiment script is `autoexp_pool.py`.  It is written in
+python, and is primarily set up to time external commands.  The
+current version "measures" the time it takes to type a name by
+generating a random number.  However, it should be easily adapted to
+real experiments.  Before it can be used, you must put your google
+account information and the google docs spreadsheet key in the
+`password.py` file.  You can find a spreadsheet's key by looking at
+its url. Running `autoexp_pool.py` should add a new table called
+`paper` to the google docs spreadsheet. It should look like
+[this][example-spreadsheet].  If you look at the spreadsheet while the
+script is running, you should be able to see each row being added to
+the spreadsheet.  This is more useful for experiments that take hours
+or days to run.
 
 `analyze.R` is an R script that analyzes the uploaded data.  It reads
 the experiment data directly from google docs, counts the number of
