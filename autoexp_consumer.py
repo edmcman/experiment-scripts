@@ -8,6 +8,11 @@ import time
 import logging
 logging.basicConfig()
 
+def all_done():
+    print " [x] Queue empty"
+    connection.close()
+    sys.exit(0)
+
 connection = pika.BlockingConnection(pika.ConnectionParameters(
         host='localhost'))
 channel = connection.channel()
@@ -26,7 +31,10 @@ def callback(ch, method, properties, body):
         print sys.exc_info()[0]
 
 channel.basic_qos(prefetch_count=1)
-channel.basic_consume(callback,
-                      queue='autoexp_queue')
-
-channel.start_consuming()
+while True:
+    method_frame, header_frame, body = channel.basic_get(queue = 'autoexp_queue')
+    #print method_frame, header_frame, body
+    if method_frame is not None and method_frame.NAME == 'Basic.GetOk':
+        callback(channel, method_frame, header_frame, body)
+    else:
+        all_done()
