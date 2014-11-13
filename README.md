@@ -58,9 +58,9 @@ random number.  However, it should be easily adapted to real
 experiments.  Before it can be used, you must put your google account
 information and the google docs spreadsheet key in the `password.py`
 file.  You can find a spreadsheet's key by looking at its url. You can
-run the experiment using a single machine by running
+run the experiment using multiple cores on a single machine by running
 `autoexp_pool.py`.  Alternatively, you can run the experiment on
-multiple machines with the help of a [RabbiMQ][RabbitMQ] server by
+multiple machines with the help of a [RabbitMQ][RabbitMQ] server by
 running `autoexp_producer.py` on any machine, and then running
 `autoexp_consumer.py` on each worker machine.  In either case, the
 scripts should add a new table called `paper` to the google docs
