@@ -30,15 +30,15 @@ ids = ["name", "num"]
 # Measurement (output) columns
 measured = ["time"]
 
+client = None
+
 def login():
 
-    try:
-        client
-    except NameError:
+    global client
+    if client is None:
         # Change this to the name of the worksheet you want to use
         dbname="paper"
 
-        global client
         client = gdata.spreadsheet.text_db.DatabaseClient(username=user, password=password)
 
         global db
