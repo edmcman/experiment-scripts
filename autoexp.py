@@ -5,6 +5,8 @@
 
 # Authors: Ed Schwartz and Thanassis Avgerinos
 
+from password import key, user, password
+from subprocess import Popen, PIPE
 import csv
 import gdata.spreadsheet.text_db
 import os
@@ -14,8 +16,6 @@ import subprocess
 import sys
 import time
 
-from subprocess import Popen, PIPE
-
 # Redo entries already in sheet?
 redo = False
 
@@ -23,26 +23,33 @@ trials = 20
 
 names = ["ed", "thanassis"]
 inputs = reduce(list.__add__, map(lambda n: map(lambda num: {"name": n, "num": num}, xrange(trials)), names))
-print inputs
+#print inputs
 
 # Input columns
 ids = ["name", "num"]
 # Measurement (output) columns
 measured = ["time"]
 
-from password import key, user, password
+def login():
 
-# Change this to the name of the worksheet you want to use
-dbname="paper"
+    try:
+        client
+    except NameError:
+        # Change this to the name of the worksheet you want to use
+        dbname="paper"
 
-client = gdata.spreadsheet.text_db.DatabaseClient(username=user, password=password)
+        global client
+        client = gdata.spreadsheet.text_db.DatabaseClient(username=user, password=password)
 
-db = client.GetDatabases(spreadsheet_key=key)[0]
-tables = db.GetTables(name=dbname)
-if len(tables) == 1:
-    table = tables[0]
-else:
-    table = db.CreateTable(dbname, ids + measured)
+        global db
+        db = client.GetDatabases(spreadsheet_key=key)[0]
+        global tables
+        tables = db.GetTables(name=dbname)
+        global table
+        if len(tables) == 1:
+            table = tables[0]
+        else:
+            table = db.CreateTable(dbname, ids + measured)
 
 def timeit(cmd):
     stime = time.time()
@@ -70,6 +77,7 @@ def run_experiment(inputs):
     query_str = string.join(query_strs, " and ")
     #print query_str
 
+    login()
     records = table.FindRecords(query_str)
     #print records
 
@@ -101,6 +109,9 @@ def run_experiment(inputs):
          return None
 
 def process_results(d):
+
+    login()
+
     ## Try a couple times to add the data
     for i in xrange(10):
         try:

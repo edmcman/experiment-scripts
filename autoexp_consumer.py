@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import argparse
 import autoexp
 import json
 import pika
@@ -8,13 +9,19 @@ import time
 import logging
 logging.basicConfig()
 
+parser = argparse.ArgumentParser(description='Run experiments from RabbitMQ server.')
+parser.add_argument('--server', dest='server', action='store',
+                    default='localhost',
+                    help='address of the RabbitMQ server (default: localhost)')
+args = parser.parse_args()
+
 def all_done():
     print " [x] Queue empty"
     connection.close()
     sys.exit(0)
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(
-        host='localhost'))
+        host=args.server))
 channel = connection.channel()
 
 channel.queue_declare(queue='autoexp_queue', durable=True)
