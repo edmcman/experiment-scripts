@@ -5,6 +5,8 @@
 
 # Authors: Ed Schwartz and Thanassis Avgerinos
 
+from password import key, user, password
+from subprocess import Popen, PIPE
 import csv
 import gdata.spreadsheet.text_db
 import os
@@ -13,9 +15,6 @@ import string
 import subprocess
 import sys
 import time
-from multiprocessing import Pool
-
-from subprocess import Popen, PIPE
 
 # Redo entries already in sheet?
 redo = False
@@ -24,26 +23,33 @@ trials = 20
 
 names = ["ed", "thanassis"]
 inputs = reduce(list.__add__, map(lambda n: map(lambda num: {"name": n, "num": num}, xrange(trials)), names))
-print inputs
+#print inputs
 
 # Input columns
 ids = ["name", "num"]
 # Measurement (output) columns
 measured = ["time"]
 
-from password import key, user, password
+def login():
 
-# Change this to the name of the worksheet you want to use
-dbname="paper"
+    try:
+        client
+    except NameError:
+        # Change this to the name of the worksheet you want to use
+        dbname="paper"
 
-client = gdata.spreadsheet.text_db.DatabaseClient(username=user, password=password)
+        global client
+        client = gdata.spreadsheet.text_db.DatabaseClient(username=user, password=password)
 
-db = client.GetDatabases(spreadsheet_key=key)[0]
-tables = db.GetTables(name=dbname)
-if len(tables) == 1:
-    table = tables[0]
-else:
-    table = db.CreateTable(dbname, ids + measured)
+        global db
+        db = client.GetDatabases(spreadsheet_key=key)[0]
+        global tables
+        tables = db.GetTables(name=dbname)
+        global table
+        if len(tables) == 1:
+            table = tables[0]
+        else:
+            table = db.CreateTable(dbname, ids + measured)
 
 def timeit(cmd):
     stime = time.time()
@@ -57,14 +63,23 @@ def timeit(cmd):
 
     return duration, stderr
 
-def run_method(inputs):
+def quote_if_needed(x):
+    x = str(x)
+    if x.isdigit():
+        return x
+    else:
+        return "\"" + x + "\""
+
+def run_experiment(inputs):
 
     # Check for existing rows
-    query_strs = map(lambda column: column + " == \"" + str(inputs[column]) + "\"", ids)
+    query_strs = map(lambda column: column + " == " + quote_if_needed(inputs[column]), ids)
     query_str = string.join(query_strs, " and ")
     #print query_str
 
+    login()
     records = table.FindRecords(query_str)
+    #print records
 
     if redo:
         for row in records:
@@ -78,31 +93,36 @@ def run_method(inputs):
 
         measurements = {"time": runtime}
 
+        # Add input columns
         m = map(lambda column: (column, str(inputs[column])), ids)
+        # Add measurement columns
         m = m + map(lambda column: (column, str(measurements[column])), measured)
         d = dict(m)
-        #print d
 
-        ## Try a couple times to add the data
-        for i in xrange(10):
-             try:
-                 print "adding", d
-                 table.AddRecord(d)
-                 break
-             except:
-                 print "Unexpected error:", sys.exc_info()[0]
-                 time.sleep(i*10)
+        return d
 
     else:
          # Don't make Google too mad.
          print "Skipping", inputs
          sys.stdout.flush()
          time.sleep(1)
+         return None
 
-pool = Pool()
+def process_results(d):
 
-# By specifying a timeout, keyboard interrupts are processed.
-# See http://stackoverflow.com/a/1408476/670527
-pool.map_async(run_method, inputs).get(sys.maxint)
+    login()
 
+    ## Try a couple times to add the data
+    for i in xrange(10):
+        try:
+            print "adding", d
+            table.AddRecord(d)
+            break
+        except:
+            print "Unexpected error:", sys.exc_info()[0]
+            time.sleep(i*10)
 
+def run_and_process(i):
+    x = run_experiment(i)
+    if not x is None:
+        process_results(x)
