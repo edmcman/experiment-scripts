@@ -4,6 +4,9 @@ from multiprocessing import Pool
 import autoexp
 import sys
 
+# Make sure the database exists to avoid race conditions
+autoexp.setup()
+
 pool = Pool()
 
 # By specifying a timeout, keyboard interrupts are processed.

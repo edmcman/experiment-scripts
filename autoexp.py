@@ -50,6 +50,10 @@ def login():
         else:
             table = db.CreateTable(dbname, ids + measured)
 
+def setup():
+    if use_google:
+        login()
+
 def timeit(cmd):
     stime = time.time()
     p = subprocess.Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)

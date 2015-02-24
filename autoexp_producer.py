@@ -20,6 +20,9 @@ channel = connection.channel()
 
 channel.queue_declare(queue='autoexp_queue', durable=True)
 
+# Make sure the database exists to avoid race conditions
+autoexp.setup()
+
 for input in autoexp.inputs:
     channel.basic_publish(exchange='',
                           routing_key='autoexp_queue',
