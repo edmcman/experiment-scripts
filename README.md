@@ -6,7 +6,7 @@ analyzing them, and reporting the results in an academic paper.
 Specifically, the scripts:
 
 1. Automatically runs experiments using a script and uploads the
-results to a google doc
+results to a google doc and/or rabbitmq queue.
 
 2. Downloads the results into [R][R]
 
@@ -35,7 +35,7 @@ Quick Start
 ===========
 
 * Add google docs spreadsheet key and login information to
-  `password.py`.
+  `config.py`.
 
 * Run `python autoexp_pool.py`
 
@@ -56,7 +56,7 @@ and is primarily set up to time external commands.  The current
 version "measures" the time it takes to type a name by generating a
 random number.  However, it should be easily adapted to real
 experiments.  Before it can be used, you must put your google account
-information and the google docs spreadsheet key in the `password.py`
+information and the google docs spreadsheet key in the `config.py`
 file.  You can find a spreadsheet's key by looking at its url. You can
 run the experiment using multiple cores on a single machine by running
 `autoexp_pool.py`.  Alternatively, you can run the experiment on
@@ -67,7 +67,12 @@ scripts should add a new table called `paper` to the google docs
 spreadsheet. It should look like [this][example-spreadsheet].  If you
 look at the spreadsheet while the script is running, you should be
 able to see each row being added to the spreadsheet.  This is more
-useful for experiments that take hours or days to run.
+useful for experiments that take hours or days to run.  Alternatively,
+for experiments that produce outputs too large for a spreadsheet, you
+can save the results in a [RabbitMQ][RabbitMQ] queue by setting
+`use_google=False` and `output_rabbitmq=True` in `config.py`.  You can
+then download the results into a csv file by running
+`autoexp_download_output.py`.
 
 `analyze.R` is an R script that analyzes the uploaded data.  It reads
 the experiment data directly from google docs, counts the number of

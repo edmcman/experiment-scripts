@@ -6,7 +6,7 @@ import json
 import pika
 import sys
 import logging
-logging.basicConfig()
+logging.basicConfig(level=logging.INFO)
 
 parser = argparse.ArgumentParser(description='Set up experiments in RabbitMQ server.')
 parser.add_argument('--server', dest='server', action='store',
@@ -30,3 +30,4 @@ for input in autoexp.inputs:
 
 connection.close()
 
+logging.info("Producer has filled the queue")

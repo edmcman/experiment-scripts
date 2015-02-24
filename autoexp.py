@@ -5,10 +5,9 @@
 
 # Authors: Ed Schwartz and Thanassis Avgerinos
 
-from password import key, user, password
+from config import *
 from subprocess import Popen, PIPE
 import csv
-import gdata.spreadsheet.text_db
 import os
 import random
 import string
@@ -20,7 +19,6 @@ import time
 redo = False
 
 trials = 20
-
 names = ["ed", "thanassis"]
 inputs = reduce(list.__add__, map(lambda n: map(lambda num: {"name": n, "num": num}, xrange(trials)), names))
 #print inputs
@@ -39,6 +37,7 @@ def login():
         # Change this to the name of the worksheet you want to use
         dbname="paper"
 
+        import gdata.spreadsheet.text_db
         client = gdata.spreadsheet.text_db.DatabaseClient(username=user, password=password)
 
         global db
@@ -77,16 +76,20 @@ def run_experiment(inputs):
     query_str = string.join(query_strs, " and ")
     #print query_str
 
-    login()
-    records = table.FindRecords(query_str)
-    #print records
+    if use_google:
+        login()
+        records = table.FindRecords(query_str)
+        #print records
 
-    if redo:
-        for row in records:
-            row.Delete()
-            go = True
+        if redo:
+            for row in records:
+                row.Delete()
+                go = True
+        else:
+            go = len(records) == 0
     else:
-        go = len(records) == 0
+        # Always go when not using the spreadsheet db
+        go = True
 
     if go:
         runtime, out = timeit("sleep " + str(random.normalvariate(len(inputs["name"]), 1.0)))
@@ -108,21 +111,35 @@ def run_experiment(inputs):
          time.sleep(1)
          return None
 
-def process_results(d):
+def process_results(d, channel=None):
 
-    login()
+    if use_google:
+        login()
 
-    ## Try a couple times to add the data
-    for i in xrange(10):
-        try:
-            print "adding", d
-            table.AddRecord(d)
-            break
-        except:
-            print "Unexpected error:", sys.exc_info()[0]
-            time.sleep(i*10)
+        ## Try a couple times to add the data
+        for i in xrange(10):
+            try:
+                print "adding", d
+                table.AddRecord(d)
+                break
+            except:
+                print "Unexpected error:", sys.exc_info()[0]
+                time.sleep(i*10)
 
-def run_and_process(i):
+    if output_rabbitmq:
+        import json
+        import pika
+
+        channel.queue_declare(queue='autoexp_output_queue', durable=True)
+        channel.basic_publish(exchange='',
+                              routing_key='autoexp_output_queue',
+                              body=json.dumps(d),
+                              properties=pika.BasicProperties(
+                delivery_mode = 2, # make message persistent
+                ))
+
+
+def run_and_process(i, channel=None):
     x = run_experiment(i)
     if not x is None:
-        process_results(x)
+        process_results(x, channel)
