@@ -13,6 +13,8 @@ parser = argparse.ArgumentParser(description='Download results from RabbitMQ ser
 parser.add_argument('--server', dest='server', action='store',
                     default='localhost',
                     help='address of the RabbitMQ server (default: localhost)')
+parser.add_argument('--noack', dest='noack', action='store_true', default=False,
+                    help='Do not send acknowledgements to the RabbitMQ server (default: disabled)')
 args = parser.parse_args()
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(
@@ -35,7 +37,8 @@ def callback(ch, method, properties, body):
         output=json.loads(body)
         writer.writerow(output)
         logging.debug("Done with %r" % (output,))
-        ch.basic_ack(delivery_tag = method.delivery_tag)
+        if not args.noack:
+            ch.basic_ack(delivery_tag = method.delivery_tag)
     except:
         print sys.exc_info()[0]
 
